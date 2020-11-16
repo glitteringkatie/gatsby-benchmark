@@ -13,17 +13,29 @@ module.exports = {
   },
   plugins: [
     {
-      resolve: `gatsby-source-filesystem`,
+      resolve: "gatsby-source-filesystem",
       options: {
+        name: "blog",
         path: `${__dirname}/content/blog`,
-        name: `blog`,
       },
     },
     {
-      resolve: `gatsby-source-filesystem`,
+      resolve: "gatsby-source-git",
       options: {
-        path: `${__dirname}/content/assets`,
-        name: `assets`,
+        name: "generated-mdx",
+        remote: "https://github.com/glitteringkatie/generated-mdx.git",
+        branch: "main",
+        patterns: ["**/*.mdx", "**/*.jpg"],
+      },
+    },
+    {
+      resolve: "gatsby-plugin-mdx",
+      options: {
+        defaultLayouts: {
+          default: require.resolve("./src/templates/blog-post.js"),
+        },
+        remarkPlugins: [],
+        gatsbyRemarkPlugins: [],
       },
     },
     {

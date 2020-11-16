@@ -4,9 +4,10 @@ import { Link, graphql } from "gatsby"
 import Bio from "../components/bio"
 import Layout from "../components/layout"
 import SEO from "../components/seo"
+import { MDXRenderer } from "gatsby-plugin-mdx"
 
 const BlogPostTemplate = ({ data, location }) => {
-  const post = data.markdownRemark
+  const post = data.mdx
   const siteTitle = data.site.siteMetadata?.title || `Title`
   const { previous, next } = data
 
@@ -14,7 +15,7 @@ const BlogPostTemplate = ({ data, location }) => {
     <Layout location={location} title={siteTitle}>
       <SEO
         title={post.frontmatter.title}
-        description={post.frontmatter.description || post.excerpt}
+        description={post.frontmatter.summary || post.excerpt}
       />
       <article
         className="blog-post"
@@ -25,10 +26,7 @@ const BlogPostTemplate = ({ data, location }) => {
           <h1 itemProp="headline">{post.frontmatter.title}</h1>
           <p>{post.frontmatter.date}</p>
         </header>
-        <section
-          dangerouslySetInnerHTML={{ __html: post.html }}
-          itemProp="articleBody"
-        />
+        <MDXRenderer>{post.body}</MDXRenderer>
         <hr />
         <footer>
           <Bio />
@@ -46,14 +44,14 @@ const BlogPostTemplate = ({ data, location }) => {
         >
           <li>
             {previous && (
-              <Link to={previous.fields.slug} rel="prev">
+              <Link to={previous.slug} rel="prev">
                 ← {previous.frontmatter.title}
               </Link>
             )}
           </li>
           <li>
             {next && (
-              <Link to={next.fields.slug} rel="next">
+              <Link to={next.slug} rel="next">
                 {next.frontmatter.title} →
               </Link>
             )}
@@ -67,7 +65,7 @@ const BlogPostTemplate = ({ data, location }) => {
 export default BlogPostTemplate
 
 export const pageQuery = graphql`
-  query BlogPostBySlug(
+  query BlogPostById(
     $id: String!
     $previousPostId: String
     $nextPostId: String
@@ -77,28 +75,24 @@ export const pageQuery = graphql`
         title
       }
     }
-    markdownRemark(id: { eq: $id }) {
-      id
+    mdx(id: { eq: $id }) {
+      slug
       excerpt(pruneLength: 160)
-      html
+      body
       frontmatter {
         title
         date(formatString: "MMMM DD, YYYY")
-        description
+        summary
       }
     }
-    previous: markdownRemark(id: { eq: $previousPostId }) {
-      fields {
-        slug
-      }
+    previous: mdx(id: { eq: $previousPostId }) {
+      slug
       frontmatter {
         title
       }
     }
-    next: markdownRemark(id: { eq: $nextPostId }) {
-      fields {
-        slug
-      }
+    next: mdx(id: { eq: $nextPostId }) {
+      slug
       frontmatter {
         title
       }
