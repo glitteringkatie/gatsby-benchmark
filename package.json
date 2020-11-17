@@ -51,7 +51,7 @@
   "scripts": {
     "build": "gatsby build",
     "benchmark": "gatsby clean && time gatsby build",
-    "incremental": "GATSBY_EXPERIMENTAL_PAGE_BUILD_ON_DATA_CHANGES=true time yarn build",
+    "incremental": "GATSBY_EXPERIMENTAL_PAGE_BUILD_ON_DATA_CHANGES=true time gatsby build --log-pages",
     "develop": "gatsby develop",
     "format": "prettier --write \"**/*.{js,jsx,ts,tsx,json,md}\"",
     "start": "npm run develop",
